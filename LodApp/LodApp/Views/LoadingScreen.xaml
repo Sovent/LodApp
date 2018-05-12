@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:markupExtensions="clr-namespace:LodApp.MarkupExtensions;assembly=LodApp"
+             x:Class="LodApp.Views.LoadingScreen"
+						 BackgroundColor="White"
+						 Appearing="LoadingScreen_OnAppearing">
+	<StackLayout HorizontalOptions="Center" VerticalOptions="Center">
+		<Image Source="{markupExtensions:EmbeddedImage LodApp.Images.logo-no-sign.jpg}" />
+		<Label FontAttributes="Bold" FontSize="24" HorizontalOptions="Center" Text="Я гружусь..."/>
+	</StackLayout>
+</ContentPage>
