@@ -22,7 +22,7 @@ namespace LodApp.DataAccess
 
 		public void AuthorizeBy(string token)
 		{
-			HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+			HttpClient.DefaultRequestHeaders.Authorization = token == null ? null : new AuthenticationHeaderValue("Bearer", token);
 		}
 
 		public async Task<AuthorizationTokenInfo> LoginAsync(Credentials credentials)
@@ -40,7 +40,8 @@ namespace LodApp.DataAccess
 		public async Task<IEnumerable<ProjectPreview>> GetProjectsPreviewAsync(int offset, int limit)
 		{
 			var httpResponse = await HttpClient.GetAsync($"projects/{offset}/{limit}");
-			return await ParseResponseAsync<ProjectPreview[]>(httpResponse);
+			var paginable = await ParseResponseAsync<PaginableObject<ProjectPreview>>(httpResponse);
+			return paginable.Data;
 		}
 
 		private static async Task<T> ParseResponseAsync<T>(HttpResponseMessage response)

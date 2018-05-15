@@ -1,38 +1,71 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
+
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:converters="clr-namespace:LodApp.Converters;assembly=LodApp"
              x:Class="LodApp.Views.Projects"
-						 Title="Проекты"
-						 Appearing="Projects_OnAppearing">
-    <ListView>
-			<ListView.ItemTemplate>
-				<DataTemplate>
-					<ViewCell>
-						<Grid>
-							<Grid.RowDefinitions>
-								<RowDefinition Height="35"/>
-								<RowDefinition Height="35"/>
-							</Grid.RowDefinitions>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="70"/>
-								<ColumnDefinition Width="*"/>
-								<ColumnDefinition Width="100"/>
-							</Grid.ColumnDefinitions>
-							<Label 
-								Grid.Column="0"
-								Grid.Row="0"
-								Grid.RowSpan="2"
-								Text="{Binding ProjectId}"/>
-							<Label 
-								Grid.Column="1"
-								Grid.Row="0"
-								Text="{Binding Name}"/>
-							<StackLayout Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
-									
-							</StackLayout>
-						</Grid>
-					</ViewCell>
-				</DataTemplate>
+             Title="Проекты"
+             Appearing="Projects_OnAppearing">
+	<ContentPage.Resources>
+		<converters:ProjectStatusStringConverter x:Key="ProjectStatusStringConverter"/>
+	</ContentPage.Resources>
+	<ListView 
+		x:Name="ProjectItems"
+		ItemsSource="{Binding Path=ProjectItems}" 
+		RowHeight="70"
+		ItemAppearing="ListView_OnItemAppearing"
+		IsPullToRefreshEnabled="True"
+		RefreshCommand="{Binding InitializeCommand}"
+		IsRefreshing="{Binding IsLoading}"
+		ItemSelected="ListView_OnItemSelected">
+		<ListView.ItemTemplate>
+			<DataTemplate>
+				<ViewCell>
+					<Grid ColumnSpacing="0" RowSpacing="0">
+						<Grid.RowDefinitions>
+							<RowDefinition Height="35" />
+							<RowDefinition Height="35" />
+						</Grid.RowDefinitions>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="50" />
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="100" />
+						</Grid.ColumnDefinitions>
+						<Label
+							Grid.Column="0"
+							Grid.Row="0"
+							Grid.RowSpan="2"
+							Text="{Binding ProjectId}"
+							VerticalTextAlignment="Center"
+							HorizontalTextAlignment="Center"/>
+						<Label
+							Grid.Column="1"
+							Grid.Row="0"
+							Text="{Binding ProjectName}"
+							LineBreakMode="TailTruncation"
+							FontSize="20"
+							VerticalTextAlignment="Center"/>
+						<StackLayout Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Padding="0, 5">
+							<Label Text="Мобильное" IsVisible="{Binding IsMobile}" BackgroundColor="#ffd200" />
+							<Label Text="Веб" IsVisible="{Binding IsWeb}" BackgroundColor="#ffd200" />
+							<Label Text="Десктоп" IsVisible="{Binding IsDesktop}" BackgroundColor="#ffd200" />
+							<Label Text="Игра" IsVisible="{Binding IsGame}" BackgroundColor="#ffd200" />
+							<Label Text="Другое" IsVisible="{Binding IsOther}" BackgroundColor="#ffd200" />
+						</StackLayout>
+						<Label Grid.Column="2" 
+									 Grid.Row="0" 
+									 Grid.RowSpan="2"
+									 Text="{Binding ProjectStatus, Converter={StaticResource ProjectStatusStringConverter}}"
+									 HorizontalTextAlignment="Center" 
+									 VerticalTextAlignment="Center"/>
+					</Grid>
+				</ViewCell>
+			</DataTemplate>
 		</ListView.ItemTemplate>
-		</ListView>
+		<ListView.Footer>
+			<StackLayout HorizontalOptions="Center" VerticalOptions="Start">
+				<ActivityIndicator IsRunning="{Binding Path=IsLoading}"/>
+			</StackLayout>
+		</ListView.Footer>
+	</ListView>
 </ContentPage>

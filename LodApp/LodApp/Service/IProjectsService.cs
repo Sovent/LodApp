@@ -1,10 +1,11 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using LodApp.DataAccess.DTO;
 
 namespace LodApp.Service
 {
 	public interface IProjectsService
 	{
-		Task<ProjectPreview> GetProjects(int offset, int limit);
+		Task<IEnumerable<ProjectPreview>> GetProjects(int offset, int limit);
 	}
 }

@@ -19,6 +19,7 @@ namespace LodApp.Service
 			try
 			{
 				CrossSettings.Current.Remove(TokenDataPropertyName);
+				_lodClient.AuthorizeBy(null);
 				var authentication = await _lodClient.LoginAsync(credentials);
 				CrossSettings.Current.AddOrUpdate(TokenDataPropertyName, authentication);
 				_lodClient.AuthorizeBy(authentication.Token);
