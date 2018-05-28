@@ -14,6 +14,8 @@ namespace LodApp.DataAccess
 
 		Task<Project> GetProjectAsync(int projectId);
 
-		void AuthorizeBy(string token);
+		Task UpdateProjectAsync(int projectId, ProjectActionRequest request);
+
+ 		void AuthorizeBy(string token);
 	}
 }

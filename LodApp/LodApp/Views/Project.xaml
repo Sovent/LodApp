@@ -8,7 +8,7 @@
             x:Class="LodApp.Views.Project"
             Title="{Binding ProjectName}">
 	<TabbedPage.ToolbarItems>
-			<ToolbarItem Text="Save" />
+			<ToolbarItem Text="Save" Command="{Binding SaveProject}"/>
 	</TabbedPage.ToolbarItems>
 	<ContentPage Title="Информация" Padding="10">
 		<ContentPage.Resources>
@@ -39,8 +39,8 @@
 							ItemsSource="{Binding Source={x:Static viewModels:ProjectViewModel.ProjectStatuses}}"
 							SelectedItem="{Binding ProjectStatus, Mode=TwoWay, Converter={StaticResource ProjectStatusStringConverter}}" />
 					</StackLayout>
-					<Frame Padding="0" FlexLayout.Basis="150" FlexLayout.Shrink="0">
-						<Image HeightRequest="150" WidthRequest="150" Aspect="AspectFill" Source="{Binding Image}" />
+					<Frame Padding="0" FlexLayout.Basis="150" FlexLayout.Shrink="0" BackgroundColor="Black">
+						<Image BackgroundColor="Black" HeightRequest="150" WidthRequest="150" Aspect="AspectFill" Source="{Binding Image}" />
 					</Frame>
 				</FlexLayout>
 				<StackLayout Spacing="10">

@@ -15,11 +15,13 @@
   <ItemGroup>
     <None Remove="Images\developer-default-photo.png" />
     <None Remove="Images\logo-no-sign.jpg" />
+    <None Remove="Images\project-cap-image.png" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Images\developer-default-photo.png" />
     <EmbeddedResource Include="Images\logo-no-sign.jpg" />
+    <EmbeddedResource Include="Images\project-cap-image.png" />
   </ItemGroup>
 
   <ItemGroup>

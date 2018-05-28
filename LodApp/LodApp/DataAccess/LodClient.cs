@@ -26,6 +26,12 @@ namespace LodApp.DataAccess
 			return await ParseResponseAsync<Project>(httpResponse);
 		}
 
+		public async Task UpdateProjectAsync(int projectId, ProjectActionRequest request)
+		{
+			var httpResponse = await HttpClient.PutAsync("projects/" + projectId, GetContent(request));
+			await ParseResponseAsync<string>(httpResponse);
+		}
+
 		public void AuthorizeBy(string token)
 		{
 			HttpClient.DefaultRequestHeaders.Authorization = token == null ? null : new AuthenticationHeaderValue("Bearer", token);

@@ -10,6 +10,8 @@ namespace LodApp.Service
 
 		Task<IEnumerable<ProjectPreview>> GetProjects(int offset, int limit);
 
+		Task<Result<string>> UpdateProject(int projectId, ProjectActionRequest request);
+
 		Task DeleteDeveloperFromProject(int projectId, int userId);
 	}
 }

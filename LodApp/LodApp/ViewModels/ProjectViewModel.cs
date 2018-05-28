@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using LodApp.Converters;
 using LodApp.DataAccess.DTO;
+using LodApp.Extensions;
 using LodApp.Service;
 using Xamarin.Forms;
 
@@ -42,9 +43,11 @@ namespace LodApp.ViewModels
 			_projectsService = projectsService ?? throw new ArgumentNullException(nameof(projectsService));
 			_navigationService = navigationService ?? throw new ArgumentNullException(nameof(navigationService));
 			DeleteDeveloperCommand = new Command(async (developerViewModel) => await DeleteDeveloperAsync(developerViewModel));
+			SaveProject = new Command(async () => await SaveProjectAsync());
 		}
 
 		public ICommand DeleteDeveloperCommand { get; }
+		public ICommand SaveProject { get; }
 		public int ProjectId
 		{
 			get => _projectId;
@@ -134,6 +137,12 @@ namespace LodApp.ViewModels
 
 			await _projectsService.DeleteDeveloperFromProject(developer.ProjectId, developer.Id);
 			_developers.Remove(developer);
+		}
+
+		private Task SaveProjectAsync()
+		{
+			var request = this.ToUpdateRequest();
+			return _projectsService.UpdateProject(ProjectId, request);
 		}
 
 		private ObservableCollection<ProjectDeveloperViewModel> _developers;
