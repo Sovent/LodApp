@@ -2,8 +2,8 @@
 using System.Linq;
 using System.Threading.Tasks;
 using LodApp.DataAccess.DTO;
+using LodApp.Extensions;
 using LodApp.Service;
-using LodApp.Views;
 
 namespace LodApp.ViewModels
 {
@@ -38,13 +38,8 @@ namespace LodApp.ViewModels
 
 		public async Task GoToProjectDetails(ProjectItemViewModel viewModel)
 		{
-			await _navigationService.NavigateAsync(
-				new Project(
-					new ProjectViewModel(_projectsService)
-					{
-						ProjectId = viewModel.ProjectId,
-						ProjectName = viewModel.ProjectName
-					}));
+			var project = await _projectsService.GetProject(viewModel.ProjectId);
+			await _navigationService.NavigateAsync(new Views.Project(project.ToViewModel(_projectsService, _navigationService)));
 		}
 
 		public ObservableCollection<ProjectItemViewModel> ProjectItems

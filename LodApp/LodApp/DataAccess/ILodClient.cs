@@ -12,6 +12,8 @@ namespace LodApp.DataAccess
 
 		Task<IEnumerable<ProjectPreview>> GetProjectsPreviewAsync(int offset, int limit);
 
+		Task<Project> GetProjectAsync(int projectId);
+
 		void AuthorizeBy(string token);
 	}
 }

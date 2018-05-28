@@ -20,6 +20,12 @@ namespace LodApp.DataAccess
 			HttpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 		}
 
+		public async Task<Project> GetProjectAsync(int projectId)
+		{
+			var httpResponse = await HttpClient.GetAsync("projects/" + projectId);
+			return await ParseResponseAsync<Project>(httpResponse);
+		}
+
 		public void AuthorizeBy(string token)
 		{
 			HttpClient.DefaultRequestHeaders.Authorization = token == null ? null : new AuthenticationHeaderValue("Bearer", token);

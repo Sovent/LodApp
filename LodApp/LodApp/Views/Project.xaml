@@ -1,101 +1,120 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
+
 <TabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:extensions="clr-namespace:LodApp.Extensions;assembly=LodApp"
-             x:Class="LodApp.Views.Project"
-						 Title="{Binding ProjectName}">
-  <ContentPage Title="Информация" Padding="10">
+            xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+            xmlns:extensions="clr-namespace:LodApp.Extensions"
+            xmlns:converters="clr-namespace:LodApp.Converters"
+            xmlns:viewModels="clr-namespace:LodApp.ViewModels;assembly=LodApp"
+            x:Class="LodApp.Views.Project"
+            Title="{Binding ProjectName}">
+	<TabbedPage.ToolbarItems>
+			<ToolbarItem Text="Save" />
+	</TabbedPage.ToolbarItems>
+	<ContentPage Title="Информация" Padding="10">
+		<ContentPage.Resources>
+			<ResourceDictionary>
+				<Style x:Key="ProjectType" TargetType="Frame">
+					<Setter Property="BorderColor" Value="Transparent" />
+					<Setter Property="BackgroundColor" Value="#CC555588" />
+					<Setter Property="HasShadow" Value="True" />
+					<Setter Property="Padding" Value="5" />
+				</Style>
+				<Style x:Key="ProjectTypeName" TargetType="Label">
+					<Setter Property="HorizontalOptions" Value="StartAndExpand" />
+					<Setter Property="FontSize" Value="18" />
+					<Setter Property="TextColor" Value="White"/>
+				</Style>
+				<converters:ProjectStatusStringConverter x:Key="ProjectStatusStringConverter"/>
+			</ResourceDictionary>
+		</ContentPage.Resources>
 		
-		<ContentPage.ToolbarItems>
-			<ToolbarItem Text="Save"/>
-		</ContentPage.ToolbarItems>
-	  <ScrollView Orientation="Vertical">
-		  <StackLayout>
-			  <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="Start" Orientation="Horizontal">
-				  <StackLayout HorizontalOptions="FillAndExpand" Padding="0">
-					  <Label Text="Название проекта" />
-					  <Entry Text="ItHappened" />
-					  <Label Text="Статус проекта" />
-					  <Picker>
-						  <Picker.Items>
-							  <x:String>Заморожен</x:String>
-							  <x:String>Готов</x:String>
-							  <x:String>В процессе</x:String>
-						  </Picker.Items>
-						  <Picker.SelectedIndex>
-							  <x:Int32>1</x:Int32>
-						  </Picker.SelectedIndex>
-					  </Picker>
-				  </StackLayout>
-				  <Image HeightRequest="150" WidthRequest="150" Aspect="AspectFill"
-				         Source="https://api.lod-misis.ru/image/3t2fnzk1.png" />
-				  <!--<Entry Text="ItHappened"/>-->
-			  </StackLayout>
-				<StackLayout>
+		<ScrollView Orientation="Vertical">
+			<StackLayout>
+				<FlexLayout Direction="Row" JustifyContent="SpaceBetween" >
+					<StackLayout FlexLayout.Grow="1">
+						<Label Text="Название проекта" />
+						<Entry Text="{Binding ProjectName, Mode=TwoWay}"  />
+						<Label Text="Статус проекта" />
+						<Picker
+							ItemsSource="{Binding Source={x:Static viewModels:ProjectViewModel.ProjectStatuses}}"
+							SelectedItem="{Binding ProjectStatus, Mode=TwoWay, Converter={StaticResource ProjectStatusStringConverter}}" />
+					</StackLayout>
+					<Frame Padding="0" FlexLayout.Basis="150" FlexLayout.Shrink="0">
+						<Image HeightRequest="150" WidthRequest="150" Aspect="AspectFill" Source="{Binding Image}" />
+					</Frame>
+				</FlexLayout>
+				<StackLayout Spacing="10">
 					<Label Text="Тип проекта" />
-					<FlexLayout Direction="Row" Wrap="Wrap" AlignItems="Stretch" JustifyContent="Center">
-						<Button Text="Веб" />
-						<Button Text="Мобильное" />
-						<Button Text="Десктоп" />
-						<Button Text="Игра" />
-						<Button Text="Другое" />
-					</FlexLayout>
+					<Frame Style="{StaticResource ProjectType}">
+						<StackLayout Orientation="Horizontal">
+							<Label Text="Веб" Style="{StaticResource ProjectTypeName}" />
+							<Switch IsToggled="{Binding IsWeb, Mode=TwoWay}"/>
+						</StackLayout>
+					</Frame>
+					<Frame Style="{StaticResource ProjectType}">
+						<StackLayout Orientation="Horizontal">
+							<Label Text="Мобильное" Style="{StaticResource ProjectTypeName}" />
+							<Switch IsToggled="{Binding IsMobile, Mode=TwoWay}"/>
+						</StackLayout>
+					</Frame>
+					<Frame Style="{StaticResource ProjectType}">
+						<StackLayout Orientation="Horizontal">
+							<Label Text="Десктоп" Style="{StaticResource ProjectTypeName}" />
+							<Switch IsToggled="{Binding IsDesktop, Mode=TwoWay}"/>
+						</StackLayout>
+					</Frame>
+					<Frame Style="{StaticResource ProjectType}">
+						<StackLayout Orientation="Horizontal">
+							<Label Text="Игра" Style="{StaticResource ProjectTypeName}" />
+							<Switch IsToggled="{Binding IsGame, Mode=TwoWay}"/>
+						</StackLayout>
+					</Frame>
+					<Frame Style="{StaticResource ProjectType}">
+						<StackLayout Orientation="Horizontal">
+							<Label Text="Другое" Style="{StaticResource ProjectTypeName}" />
+							<Switch IsToggled="{Binding IsOther, Mode=TwoWay}"/>
+						</StackLayout>
+					</Frame>
 					<BoxView HeightRequest="1" BackgroundColor="#555555" />
-					<Label Text="Описание"/>
-					<extensions:FlexibleEditor Text="Приложение для фиксирования любых событий, происходящих в жизни. В функционале возможности отслеживать любые события, добавлять к ним какую-то полезную информацию, фильтровать, сортировать события, а так же смотреть статистику."/>
-					<Label Text="Репозитории"/>
+					<Label Text="Описание" />
+					<extensions:FlexibleEditor
+						Text="{Binding Description, Mode=TwoWay}" />
+					<Label Text="Репозитории" />
 					<ListView x:Name="RepositoriesList" ItemsSource="{Binding RepositoriesUrl}">
 						<ListView.ItemTemplate>
 							<DataTemplate>
-								<TextCell Text="{Binding .}" TextColor="Black"/>
+								<TextCell Text="{Binding .}" TextColor="Black">
+									<TextCell.ContextActions>
+										<MenuItem Text="Удалить" IsDestructive="True"/>
+									</TextCell.ContextActions>
+								</TextCell>
 							</DataTemplate>
 						</ListView.ItemTemplate>
 						<ListView.Footer>
-							<Button Text="Добавить репозиторий"/>
+							<Button Text="Добавить репозиторий" />
 						</ListView.Footer>
 					</ListView>
 				</StackLayout>
 			</StackLayout>
-	  </ScrollView>
-		
-	  <!--<TableView HasUnevenRows="True">
-			<TableRoot>
-				<TableSection Title="Основное">
-					<TextCell Text="Название проекта" TextColor="Black"/>
-					<EntryCell Text="ItHappened" Placeholder="Сайт Рога и Копыта"/>
-					<TextCell Text="Статус проекта" TextColor="Black"/>
-					<ViewCell>
-						<StackLayout Padding="10, 0">
-						<Picker>
-							<Picker.Items>
-								<x:String>Заморожен</x:String>
-								<x:String>Готов</x:String>
-								<x:String>В процессе</x:String>
-							</Picker.Items>
-							<Picker.SelectedIndex>
-								<x:Int32>1</x:Int32>
-							</Picker.SelectedIndex>
-						</Picker>
-						</StackLayout>
-					</ViewCell>
-					<TextCell Text="Тип проекта" TextColor="Black"/>
-					<ViewCell>
-						<FlexLayout Direction="Row" Wrap="Wrap" JustifyContent="SpaceEvenly" AlignItems="Start">
-							<Button Text="Веб"/>
-							<Button Text="Мобильное"/>
-							<Button Text="Десктоп"/>
-							<Button Text="Игра"/>
-							<Button Text="Другое"/>
-						</FlexLayout>
-					</ViewCell>
-					<SwitchCell Text="Публичное" On="True"/>
-				</TableSection>
-				<TableSection>
-					<TextCell Text="Разработчики"/>
-				</TableSection>
-			</TableRoot>
-		</TableView>-->
+		</ScrollView>
 	</ContentPage>
-	<ContentPage Title="Разработчики"></ContentPage>
-	<CarouselPage Title="Скриншоты" />
+	<ContentPage Title="Разработчики">
+		<ListView x:Name="DevelopersList" ItemsSource="{Binding Developers}" ItemSelected="DeveloperSelected">
+			<ListView.ItemTemplate>
+				<DataTemplate>
+					<TextCell Text="{Binding DisplayName}" Detail="{Binding RoleInProject}">
+						<TextCell.ContextActions>
+							<MenuItem Text="Удалить" IsDestructive="True" Command="{Binding DeleteDeveloperCommand}" CommandParameter="{Binding .}"/>
+						</TextCell.ContextActions>
+					</TextCell>
+				</DataTemplate>
+			</ListView.ItemTemplate>
+			<ListView.Footer>
+				<Button Text="Добавить разработчика"/>
+			</ListView.Footer>
+		</ListView>
+	</ContentPage>
+	<ContentPage Title="Скриншоты">
+		<FlexLayout x:Name="Screenshots" Direction="Row" Wrap="Wrap" JustifyContent="SpaceAround"/>
+	</ContentPage>
 </TabbedPage>
