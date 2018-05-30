@@ -21,6 +21,7 @@ namespace LodApp
 			container.RegisterSingleton<ILodClient, LodClient>();
 			container.RegisterSingleton<IAuthenticationService, AuthenticationService>();
 			container.RegisterSingleton<IProjectsService, ProjectsService>();
+			container.RegisterSingleton<IDevelopersService, DevelopersService>();
 			container.RegisterInstance(UserDialogs.Instance);
 			_navigationService = new NavigationService(container);
 			container.RegisterInstance(_navigationService);

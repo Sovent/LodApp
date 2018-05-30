@@ -32,7 +32,7 @@ namespace LodApp.ViewModels
 		{
 			_userDialogs = userDialogs ?? throw new ArgumentNullException(nameof(userDialogs));
 			_projectsService = projectsService ?? throw new ArgumentNullException(nameof(projectsService));
-			DeleteDeveloperCommand = new Command(async (developerViewModel) => await DeleteDeveloperAsync(developerViewModel));
+			DeleteDeveloperCommand = new Command(DeleteDeveloper);
 			SaveProject = new Command(async () => await SaveProjectAsync());
 			AddDeveloperCommand = new Command(async () => await navigationService
 				.NavigateModalAsync<AddParticipantViewModel, ObservableCollection<ProjectDeveloperViewModel>>(Developers));
@@ -45,6 +45,8 @@ namespace LodApp.ViewModels
 
 		public override async Task InitializeAsync()
 		{
+			IsLoaded = false;
+			var loading = _userDialogs.Loading("Загрузка");
 			var project = await _projectsService.GetProject(ProjectId);
 			ProjectName = project.Name;
 			ProjectStatus = project.ProjectStatus;
@@ -62,6 +64,18 @@ namespace LodApp.ViewModels
 			IsMobile = project.ProjectType.Contains(ProjectType.MobileApp);
 			IsWeb = project.ProjectType.Contains(ProjectType.Website);
 			IsOther = project.ProjectType.Contains(ProjectType.Other);
+
+			Developers.CollectionChanged += (sender, args) =>
+			{
+				if (args.NewItems == null) return;
+				foreach (var item in args.NewItems)
+				{
+					var viewModel = item as ProjectDeveloperViewModel;
+					viewModel.DeleteDeveloperCommand = DeleteDeveloperCommand;
+				}
+			};
+			IsLoaded = true;
+			loading.Hide();
 		}
 
 		public ICommand AddDeveloperCommand { get; }
@@ -147,14 +161,19 @@ namespace LodApp.ViewModels
 			set => SetValue(ref _isOther, value);
 		}
 
-		private async Task DeleteDeveloperAsync(object developerViewModel)
+		public bool IsLoaded
+		{
+			get => _isLoaded;
+			set => SetValue(ref _isLoaded, value);
+		}
+
+		private void DeleteDeveloper(object developerViewModel)
 		{
 			if (!(developerViewModel is ProjectDeveloperViewModel developer))
 			{
 				return;
 			}
 
-			await _projectsService.DeleteDeveloperFromProject(developer.ProjectId, developer.Id);
 			_developers.Remove(developer);
 		}
 
@@ -179,6 +198,7 @@ namespace LodApp.ViewModels
 		private bool _isMobile;
 		private string _description;
 		private ImageSource _image;
+		private bool _isLoaded;
 		private ObservableCollection<ImageSource> _screenshots;
 		private readonly IProjectsService _projectsService;
 		private readonly IUserDialogs _userDialogs;

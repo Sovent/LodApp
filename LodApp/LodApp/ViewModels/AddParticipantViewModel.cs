@@ -10,10 +10,11 @@ namespace LodApp.ViewModels
 {
 	public class AddParticipantViewModel : ParameterizedViewModel<ObservableCollection<ProjectDeveloperViewModel>>
 	{
-		public AddParticipantViewModel(IDevelopersService developersService)
+		public AddParticipantViewModel(INavigationService navigationService, IDevelopersService developersService)
 		{
 			_developersService = developersService;
 			AddUserCommand = new Command(async () => await AddDeveloperToProject());
+			Return = new Command(async () => await navigationService.GoBack());
 		}
 
 		public override void Prepare(ObservableCollection<ProjectDeveloperViewModel> projectDevelopers)
@@ -39,6 +40,7 @@ namespace LodApp.ViewModels
 		}
 
 		public ICommand AddUserCommand { get; }
+		public ICommand Return { get; }
 		public ObservableCollection<ProjectDeveloperViewModel> FoundDevelopers
 		{
 			get => _foundDevelopers;
@@ -71,6 +73,7 @@ namespace LodApp.ViewModels
 
 		private async Task AddDeveloperToProject()
 		{
+			SelectedDeveloper.RoleInProject = Role;
 			ProjectDevelopers.Add(SelectedDeveloper);
 			SelectedDeveloper = null;
 			Role = string.Empty;
@@ -83,9 +86,10 @@ namespace LodApp.ViewModels
 			var foundDevelopers = developers.ToViewModel();
 			var applicableDevelopers = foundDevelopers.Where(foundDeveloper =>
 				_projectDevelopers.All(projectDeveloper => projectDeveloper.Id != foundDeveloper.Id));
-			_foundDevelopers = new ObservableCollection<ProjectDeveloperViewModel>(applicableDevelopers);
+			FoundDevelopers = new ObservableCollection<ProjectDeveloperViewModel>(applicableDevelopers);
 		}
 
+		private readonly INavigationService _navigationService;
 		private readonly IDevelopersService _developersService;
 		private string _role;
 		private string _searchString;

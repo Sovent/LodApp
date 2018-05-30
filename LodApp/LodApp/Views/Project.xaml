@@ -6,9 +6,10 @@
             xmlns:converters="clr-namespace:LodApp.Converters"
             xmlns:viewModels="clr-namespace:LodApp.ViewModels;assembly=LodApp"
             x:Class="LodApp.Views.Project"
-            Title="{Binding ProjectName}">
+            Title="{Binding ProjectName}"
+						IsVisible="{Binding IsLoaded}">
 	<TabbedPage.ToolbarItems>
-			<ToolbarItem Text="Save" Command="{Binding SaveProject}"/>
+			<ToolbarItem Text="Save" Command="{Binding SaveProject}" IsEnabled="{Binding IsLoaded}"/>
 	</TabbedPage.ToolbarItems>
 	<ContentPage Title="Информация" Padding="10">
 		<ContentPage.Resources>
@@ -109,11 +110,16 @@
 				</DataTemplate>
 			</ListView.ItemTemplate>
 			<ListView.Footer>
-				<Button Text="Добавить разработчика"/>
+				<Button Text="Добавить разработчика" Command="{Binding AddDeveloperCommand}"/>
 			</ListView.Footer>
 		</ListView>
 	</ContentPage>
 	<ContentPage Title="Скриншоты">
-		<FlexLayout x:Name="Screenshots" Direction="Row" Wrap="Wrap" JustifyContent="SpaceAround"/>
+		<ScrollView>
+			<StackLayout>
+				<FlexLayout x:Name="Screenshots" Direction="Row" Wrap="Wrap" JustifyContent="SpaceAround"/>
+				<Button Text="Добавить скриншот"/>
+			</StackLayout>
+		</ScrollView>
 	</ContentPage>
 </TabbedPage>

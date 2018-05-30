@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,14 +17,18 @@ namespace LodApp.Service
 
 		public async Task<IEnumerable<DeveloperPageDeveloper>> SearchDevelopers(string searchString)
 		{
-			if (string.IsNullOrEmpty(searchString))
-			{
-				return Enumerable.Empty<DeveloperPageDeveloper>();
-			}
-
 			try
 			{
-				var developers = await _lodClient.SearchDevelopers(searchString);
+				IEnumerable<DeveloperPageDeveloper> developers;
+				if (string.IsNullOrEmpty(searchString))
+				{
+					developers = await _lodClient.GetDevelopers(0);
+				}
+				else
+				{
+					developers = await _lodClient.SearchDevelopers(searchString);
+				}
+
 				return developers;
 			}
 			catch (LodClientException)

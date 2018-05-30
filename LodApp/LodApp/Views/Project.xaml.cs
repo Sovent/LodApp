@@ -61,7 +61,8 @@ namespace LodApp.Views
 				var frame = new Frame
 				{
 					Content = image,
-					Padding = new Thickness(2)
+					Padding = new Thickness(2),
+					HeightRequest = 300
 				};
 				FlexLayout.SetBasis(frame, new FlexBasis(0.5F, true));
 				Screenshots.Children.Add(frame);

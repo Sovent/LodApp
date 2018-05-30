@@ -22,6 +22,12 @@ namespace LodApp.Views
 			} 
 		}
 
+		protected override bool OnBackButtonPressed()
+		{
+			_viewModel.Return.Execute(null);
+			return true;
+		}
+
 		private AddParticipantViewModel _viewModel;
 	}
 }

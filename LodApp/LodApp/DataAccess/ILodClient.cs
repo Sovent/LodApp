@@ -16,6 +16,8 @@ namespace LodApp.DataAccess
 
 		Task UpdateProjectAsync(int projectId, ProjectActionRequest request);
 
+		Task<IEnumerable<DeveloperPageDeveloper>> GetDevelopers(int page);
+
 		Task<IEnumerable<DeveloperPageDeveloper>> SearchDevelopers(string searchString);
 
  		void AuthorizeBy(string token);

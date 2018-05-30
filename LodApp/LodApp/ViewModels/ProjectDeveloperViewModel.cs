@@ -18,7 +18,7 @@ namespace LodApp.ViewModels
 		}
 
 		public ICommand GoToDeveloperCommand { get; }
-		public ICommand DeleteDeveloperCommand { get; }
+		public ICommand DeleteDeveloperCommand { get; set; }
 
 		public int Id
 		{

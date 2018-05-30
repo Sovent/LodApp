@@ -32,6 +32,13 @@ namespace LodApp.DataAccess
 			await ParseResponseAsync<string>(httpResponse);
 		}
 
+		public async Task<IEnumerable<DeveloperPageDeveloper>> GetDevelopers(int page)
+		{
+			var httpResponse = await HttpClient.GetAsync("developers?page=" + page);
+			var paginable = await ParseResponseAsync<PaginableObject<DeveloperPageDeveloper>>(httpResponse);
+			return paginable.Data;
+		}
+
 		public async Task<IEnumerable<DeveloperPageDeveloper>> SearchDevelopers(string searchString)
 		{
 			var httpResponse = await HttpClient.GetAsync("developers/search/" + searchString);
