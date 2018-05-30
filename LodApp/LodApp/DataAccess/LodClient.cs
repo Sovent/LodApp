@@ -32,6 +32,12 @@ namespace LodApp.DataAccess
 			await ParseResponseAsync<string>(httpResponse);
 		}
 
+		public async Task<IEnumerable<DeveloperPageDeveloper>> SearchDevelopers(string searchString)
+		{
+			var httpResponse = await HttpClient.GetAsync("developers/search/" + searchString);
+			return await ParseResponseAsync<DeveloperPageDeveloper[]>(httpResponse);
+		}
+
 		public void AuthorizeBy(string token)
 		{
 			HttpClient.DefaultRequestHeaders.Authorization = token == null ? null : new AuthenticationHeaderValue("Bearer", token);

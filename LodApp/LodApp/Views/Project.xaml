@@ -27,7 +27,6 @@
 				<converters:ProjectStatusStringConverter x:Key="ProjectStatusStringConverter"/>
 			</ResourceDictionary>
 		</ContentPage.Resources>
-		
 		<ScrollView Orientation="Vertical">
 			<StackLayout>
 				<FlexLayout Direction="Row" JustifyContent="SpaceBetween" >

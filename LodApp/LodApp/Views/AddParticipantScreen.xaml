@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="LodApp.Views.AddParticipantScreen">
+	<RelativeLayout>
+		<ScrollView>
+			<ListView 
+				ItemsSource="FoundDevelopers"
+				SelectedItem="{Binding SelectedDeveloper, Mode=TwoWay}"
+				RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}">
+				<ListView.Header>
+					<SearchBar Text="{Binding SearchString, Mode=TwoWay}" Placeholder="Найти разработчика" HeightRequest="50" />
+				</ListView.Header>
+				<ListView.ItemTemplate>
+					<DataTemplate>
+						<TextCell Text="{Binding DisplayName}"/>
+					</DataTemplate>
+				</ListView.ItemTemplate>
+			</ListView>
+		</ScrollView>
+		<Entry
+			Text="{Binding Role, Mode=TwoWay}"
+			Placeholder="Роль"
+			RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1, Constant=-100}"
+			RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}"
+			RelativeLayout.HeightConstraint="{ConstraintExpression Type=Constant, Constant=50}" />
+		<Button 
+			Text="Добавить разработчика" 
+			Command="{Binding AddUserCommand}"
+			RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1, Constant=-50}"
+			RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}"
+			RelativeLayout.HeightConstraint="{ConstraintExpression Type=Constant, Constant=50}"/>
+	</RelativeLayout>
+</ContentPage>

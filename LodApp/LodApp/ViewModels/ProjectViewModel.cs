@@ -4,10 +4,12 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Acr.UserDialogs;
 using LodApp.Converters;
 using LodApp.DataAccess.DTO;
 using LodApp.Extensions;
 using LodApp.Service;
+using LodApp.Views;
 using Xamarin.Forms;
 
 namespace LodApp.ViewModels
@@ -26,7 +28,7 @@ namespace LodApp.ViewModels
 
 		public ProjectViewModel(ObservableCollection<string> repositoriesUrl, string projectName, ProjectStatus projectStatus, int projectId,
 			bool isOther, bool isGame, bool isDesktop, bool isWeb, bool isMobile, string description, ImageSource image, ObservableCollection<ImageSource> screenshots,
-			IProjectsService projectsService, INavigationService navigationService)
+			IProjectsService projectsService, IUserDialogs userDialogs, INavigationService navigationService, IDevelopersService developersService)
 		{
 			_repositoriesUrl = repositoriesUrl ?? throw new ArgumentNullException(nameof(repositoriesUrl));
 			_projectName = projectName ?? throw new ArgumentNullException(nameof(projectName));
@@ -37,15 +39,20 @@ namespace LodApp.ViewModels
 			_isDesktop = isDesktop;
 			_isWeb = isWeb;
 			_isMobile = isMobile;
+			_userDialogs = userDialogs;
 			_description = description ?? throw new ArgumentNullException(nameof(description));
 			_image = image ?? throw new ArgumentNullException(nameof(image));
 			_screenshots = screenshots ?? throw new ArgumentNullException(nameof(screenshots));
 			_projectsService = projectsService ?? throw new ArgumentNullException(nameof(projectsService));
-			_navigationService = navigationService ?? throw new ArgumentNullException(nameof(navigationService));
+			_userDialogs = userDialogs ?? throw new ArgumentNullException(nameof(userDialogs));
 			DeleteDeveloperCommand = new Command(async (developerViewModel) => await DeleteDeveloperAsync(developerViewModel));
 			SaveProject = new Command(async () => await SaveProjectAsync());
+			AddDeveloperCommand = new Command(async () => await navigationService.NavigateModalAsync(
+				new AddParticipantScreen(
+					new AddParticipantViewModel(Developers, developersService))));
 		}
 
+		public ICommand AddDeveloperCommand { get; }
 		public ICommand DeleteDeveloperCommand { get; }
 		public ICommand SaveProject { get; }
 		public int ProjectId
@@ -139,10 +146,13 @@ namespace LodApp.ViewModels
 			_developers.Remove(developer);
 		}
 
-		private Task SaveProjectAsync()
+		private async Task SaveProjectAsync()
 		{
+			var dialog = _userDialogs.Loading("Сохранение проекта");
 			var request = this.ToUpdateRequest();
-			return _projectsService.UpdateProject(ProjectId, request);
+			var result = await _projectsService.UpdateProject(ProjectId, request);
+			dialog.Hide();
+			_userDialogs.Toast(result.IsError ? result.ErrorMessage : result.Value);
 		}
 
 		private ObservableCollection<ProjectDeveloperViewModel> _developers;
@@ -158,7 +168,7 @@ namespace LodApp.ViewModels
 		private string _description;
 		private ImageSource _image;
 		private ObservableCollection<ImageSource> _screenshots;
-		private readonly INavigationService _navigationService;
 		private readonly IProjectsService _projectsService;
+		private readonly IUserDialogs _userDialogs;
 	}
 }

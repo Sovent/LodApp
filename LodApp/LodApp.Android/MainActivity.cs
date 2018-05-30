@@ -1,5 +1,5 @@
 ﻿using System;
-
+using Acr.UserDialogs;
 using Android.App;
 using Android.Content.PM;
 using Android.Runtime;
@@ -7,6 +7,7 @@ using Android.Views;
 using Android.Widget;
 using Android.OS;
 using ImageCircle.Forms.Plugin.Droid;
+using Xamarin.Forms;
 
 namespace LodApp.Droid
 {
@@ -23,6 +24,7 @@ namespace LodApp.Droid
             global::Xamarin.Forms.Forms.Init(this, bundle);
 
 	        ImageCircleRenderer.Init();
+	        UserDialogs.Init(this);
 			LoadApplication(new App());
 		}
     }

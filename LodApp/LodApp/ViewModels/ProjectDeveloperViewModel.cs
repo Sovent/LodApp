@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Windows.Input;
-using LodApp.Service;
-using Xamarin.Forms;
 
 namespace LodApp.ViewModels
 {
