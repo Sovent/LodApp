@@ -6,25 +6,37 @@ using Xamarin.Forms.Xaml;
 namespace LodApp.Views
 {
 	[XamlCompilation(XamlCompilationOptions.Compile)]
-	public partial class Project : TabbedPage
+	public partial class Project : TabbedPage, IView<ProjectViewModel>
 	{
-		public Project (ProjectViewModel viewModel)
+		public Project()
 		{
-			_viewModel = viewModel;
 			try
 			{
-				InitializeComponent ();
+				InitializeComponent();
 			}
 			catch (Exception e)
 			{
 				Console.WriteLine(e);
 				throw;
 			}
-			BindingContext = viewModel;
-			InitializeScreenshots(viewModel);
 		}
 
-		private readonly ProjectViewModel _viewModel;
+		public ProjectViewModel ViewModel
+		{
+			get => _viewModel;
+			set
+			{
+				_viewModel = value;
+				BindingContext = value;
+				value.PropertyChanged += (sender, args) =>
+				{
+					if (args.PropertyName == nameof(value.Screenshots))
+					{
+						InitializeScreenshots();
+					}
+				};
+			}
+		}
 
 		private void DeveloperSelected(object sender, SelectedItemChangedEventArgs e)
 		{
@@ -36,11 +48,12 @@ namespace LodApp.Views
 			DevelopersList.SelectedItem = null;
 		}
 
-		private void InitializeScreenshots(ProjectViewModel viewModel)
+		private void InitializeScreenshots()
 		{
-			foreach (var source in viewModel.Screenshots)
+			Screenshots.Children.Clear();
+			foreach (var source in _viewModel.Screenshots)
 			{
-				var image = new Image()
+				var image = new Image
 				{
 					Source = source,
 					Aspect = Aspect.AspectFill
@@ -54,5 +67,7 @@ namespace LodApp.Views
 				Screenshots.Children.Add(frame);
 			}
 		}
+
+		private ProjectViewModel _viewModel;
 	}
 }

@@ -4,8 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:converters="clr-namespace:LodApp.Converters;assembly=LodApp"
              x:Class="LodApp.Views.Projects"
-             Title="Проекты"
-             Appearing="Projects_OnAppearing">
+             Title="Проекты">
 	<ContentPage.Resources>
 		<converters:ProjectStatusStringConverter x:Key="ProjectStatusStringConverter"/>
 	</ContentPage.Resources>

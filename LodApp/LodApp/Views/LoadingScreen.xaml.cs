@@ -6,11 +6,10 @@ using Xamarin.Forms.Xaml;
 namespace LodApp.Views
 {
 	[XamlCompilation(XamlCompilationOptions.Compile)]
-	public partial class LoadingScreen : ContentPage
+	public partial class LoadingScreen : ContentPage, IView<LoadingScreenViewModel>
 	{
-		public LoadingScreen(LoadingScreenViewModel viewModel)
+		public LoadingScreen()
 		{
-			_viewModel = viewModel;
 			InitializeComponent ();
 		}
 
@@ -19,6 +18,16 @@ namespace LodApp.Views
 			_viewModel.CheckAuthenticatedCommand.Execute(null);
 		}
 
-		private readonly LoadingScreenViewModel _viewModel;
+		public LoadingScreenViewModel ViewModel
+		{
+			get => _viewModel;
+			set
+			{
+				_viewModel = value;
+				BindingContext = value;
+			}
+		}
+
+		private LoadingScreenViewModel _viewModel;
 	}
 }

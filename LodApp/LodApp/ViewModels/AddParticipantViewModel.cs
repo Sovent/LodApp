@@ -8,13 +8,16 @@ using Xamarin.Forms;
 
 namespace LodApp.ViewModels
 {
-	public class AddParticipantViewModel : BaseViewModel
+	public class AddParticipantViewModel : ParameterizedViewModel<ObservableCollection<ProjectDeveloperViewModel>>
 	{
-		public AddParticipantViewModel(
-			ObservableCollection<ProjectDeveloperViewModel> projectDevelopers, 
-			IDevelopersService developersService)
+		public AddParticipantViewModel(IDevelopersService developersService)
 		{
 			_developersService = developersService;
+			AddUserCommand = new Command(async () => await AddDeveloperToProject());
+		}
+
+		public override void Prepare(ObservableCollection<ProjectDeveloperViewModel> projectDevelopers)
+		{
 			ProjectDevelopers = projectDevelopers;
 			FoundDevelopers = new ObservableCollection<ProjectDeveloperViewModel>();
 			Role = string.Empty;
@@ -27,8 +30,12 @@ namespace LodApp.ViewModels
 
 				await SearchDevelopers();
 			};
+		}
+
+		public override Task InitializeAsync()
+		{
 			SearchString = string.Empty;
-			AddUserCommand = new Command(async () => await AddDeveloperToProject());
+			return Task.CompletedTask;
 		}
 
 		public ICommand AddUserCommand { get; }

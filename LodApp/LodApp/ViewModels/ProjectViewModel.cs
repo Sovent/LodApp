@@ -9,12 +9,11 @@ using LodApp.Converters;
 using LodApp.DataAccess.DTO;
 using LodApp.Extensions;
 using LodApp.Service;
-using LodApp.Views;
 using Xamarin.Forms;
 
 namespace LodApp.ViewModels
 {
-	public class ProjectViewModel : BaseViewModel
+	public class ProjectViewModel : ParameterizedViewModel<int>
 	{
 		static ProjectViewModel()
 		{
@@ -26,30 +25,43 @@ namespace LodApp.ViewModels
 					.Cast<string>());
 		}
 
-		public ProjectViewModel(ObservableCollection<string> repositoriesUrl, string projectName, ProjectStatus projectStatus, int projectId,
-			bool isOther, bool isGame, bool isDesktop, bool isWeb, bool isMobile, string description, ImageSource image, ObservableCollection<ImageSource> screenshots,
-			IProjectsService projectsService, IUserDialogs userDialogs, INavigationService navigationService, IDevelopersService developersService)
+		public ProjectViewModel(
+			IProjectsService projectsService, 
+			IUserDialogs userDialogs, 
+			INavigationService navigationService)
 		{
-			_repositoriesUrl = repositoriesUrl ?? throw new ArgumentNullException(nameof(repositoriesUrl));
-			_projectName = projectName ?? throw new ArgumentNullException(nameof(projectName));
-			_projectStatus = projectStatus;
-			_projectId = projectId;
-			_isOther = isOther;
-			_isGame = isGame;
-			_isDesktop = isDesktop;
-			_isWeb = isWeb;
-			_isMobile = isMobile;
-			_userDialogs = userDialogs;
-			_description = description ?? throw new ArgumentNullException(nameof(description));
-			_image = image ?? throw new ArgumentNullException(nameof(image));
-			_screenshots = screenshots ?? throw new ArgumentNullException(nameof(screenshots));
-			_projectsService = projectsService ?? throw new ArgumentNullException(nameof(projectsService));
 			_userDialogs = userDialogs ?? throw new ArgumentNullException(nameof(userDialogs));
+			_projectsService = projectsService ?? throw new ArgumentNullException(nameof(projectsService));
 			DeleteDeveloperCommand = new Command(async (developerViewModel) => await DeleteDeveloperAsync(developerViewModel));
 			SaveProject = new Command(async () => await SaveProjectAsync());
-			AddDeveloperCommand = new Command(async () => await navigationService.NavigateModalAsync(
-				new AddParticipantScreen(
-					new AddParticipantViewModel(Developers, developersService))));
+			AddDeveloperCommand = new Command(async () => await navigationService
+				.NavigateModalAsync<AddParticipantViewModel, ObservableCollection<ProjectDeveloperViewModel>>(Developers));
+		}
+
+		public override void Prepare(int projectId)
+		{
+			ProjectId = projectId;
+		}
+
+		public override async Task InitializeAsync()
+		{
+			var project = await _projectsService.GetProject(ProjectId);
+			ProjectName = project.Name;
+			ProjectStatus = project.ProjectStatus;
+			Image = project.LandingImage == null
+				? ImageSource.FromResource("LodApp.Images.project-cap-image.png")
+				: ImageSource.FromUri(project.LandingImage.BigPhotoUri);
+			Description = project.Info;
+			RepositoriesUrl = new ObservableCollection<string>(project.LinksToGithubRepositories.Select(link => link.ToString()));
+			Developers = new ObservableCollection<ProjectDeveloperViewModel>(
+				project.ProjectMemberships.Select(membership => membership.ToViewModel(project.ProjectId, this)));
+			Screenshots = new ObservableCollection<ImageSource>(
+				project.Screenshots.Select(screen => ImageSource.FromUri(screen.BigPhotoUri)));
+			IsGame = project.ProjectType.Contains(ProjectType.Game);
+			IsDesktop = project.ProjectType.Contains(ProjectType.Desktop);
+			IsMobile = project.ProjectType.Contains(ProjectType.MobileApp);
+			IsWeb = project.ProjectType.Contains(ProjectType.Website);
+			IsOther = project.ProjectType.Contains(ProjectType.Other);
 		}
 
 		public ICommand AddDeveloperCommand { get; }

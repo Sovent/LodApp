@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using System.Windows.Input;
 using LodApp.Service;
-using LodApp.Views;
 using Xamarin.Forms;
 
 namespace LodApp.ViewModels
@@ -22,15 +21,12 @@ namespace LodApp.ViewModels
 			var currentUser = await _authenticationService.GetCurrentUserAsync();
 			if (currentUser == null)
 			{
-				await _navigationService.NavigateModalAsync<LoginScreen>();
+				await _navigationService.NavigateModalAsync<LoginScreenViewModel>();
 				return;
 			}
 
-			_navigationService.SetRootPage(
-				new MainPage(new MainPageViewModel(
-					new CurrentUserViewModel(currentUser.DisplayName, currentUser.ImageUri),
-					_authenticationService,
-					_navigationService)));
+			await _navigationService.SetRootViewModelAsync<MainPageViewModel, CurrentUserViewModel>(
+				new CurrentUserViewModel(currentUser.DisplayName, currentUser.ImageUri));
 		}
 
 		private readonly IAuthenticationService _authenticationService;

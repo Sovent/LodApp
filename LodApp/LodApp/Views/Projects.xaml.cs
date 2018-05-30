@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using LodApp.Service;
 using LodApp.ViewModels;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -8,18 +7,21 @@ using Xamarin.Forms.Xaml;
 namespace LodApp.Views
 {
 	[XamlCompilation(XamlCompilationOptions.Compile)]
-	public partial class Projects : ContentPage
+	public partial class Projects : ContentPage, IView<ProjectsViewModel>
 	{
-		public Projects(ProjectsViewModel viewModel)
+		public Projects()
 		{
-			_viewModel = viewModel;
 			InitializeComponent();
-			BindingContext = viewModel;
 		}
 
-		private void Projects_OnAppearing(object sender, EventArgs e)
+		public ProjectsViewModel ViewModel
 		{
-			_viewModel.InitializeAsync();
+			get => _viewModel;
+			set
+			{
+				_viewModel = value;
+				BindingContext = value;
+			}
 		}
 		
 		private async void ListView_OnItemAppearing(object sender, ItemVisibilityEventArgs e)
@@ -42,6 +44,6 @@ namespace LodApp.Views
 			ProjectItems.SelectedItem = null;
 		}
 
-		private readonly ProjectsViewModel _viewModel;
+		private ProjectsViewModel _viewModel;
 	}
 }

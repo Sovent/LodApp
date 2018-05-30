@@ -6,13 +6,21 @@ using Xamarin.Forms.Xaml;
 namespace LodApp.Views
 {
 	[XamlCompilation(XamlCompilationOptions.Compile)]
-	public partial class LoginScreen : ContentPage
+	public partial class LoginScreen : ContentPage, IView<LoginScreenViewModel>
 	{
-		public LoginScreen(LoginScreenViewModel viewModel)
+		public LoginScreen()
 		{
-			_viewModel = viewModel;
 			InitializeComponent ();
-			BindingContext = viewModel;
+		}
+
+		public LoginScreenViewModel ViewModel
+		{
+			get => _viewModel;
+			set
+			{
+				_viewModel = value;
+				BindingContext = value;
+			} 
 		}
 
 		private async void LoginClicked(object sender, EventArgs e)
@@ -45,6 +53,6 @@ namespace LodApp.Views
 			ServerRequestIndicator.IsRunning = false;
 		}
 
-		private readonly LoginScreenViewModel _viewModel;
+		private LoginScreenViewModel _viewModel;
 	}
 }

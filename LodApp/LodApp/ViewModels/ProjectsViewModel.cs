@@ -1,9 +1,10 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using LodApp.DataAccess.DTO;
-using LodApp.Extensions;
 using LodApp.Service;
+using Xamarin.Forms;
 
 namespace LodApp.ViewModels
 {
@@ -14,9 +15,11 @@ namespace LodApp.ViewModels
 			_projectsService = projectsService;
 			_navigationService = navigationService;
 			ProjectItems = new ObservableCollection<ProjectItemViewModel>();
+			InitializeCommand = new Command(async () => await InitializeAsync());
 		}
 
-		public async Task InitializeAsync()
+		public ICommand InitializeCommand { get; }
+		public override async Task InitializeAsync()
 		{
 			IsLoading = true;
 			ProjectItems.Clear();
@@ -38,8 +41,7 @@ namespace LodApp.ViewModels
 
 		public async Task GoToProjectDetails(ProjectItemViewModel viewModel)
 		{
-			var project = await _projectsService.GetProject(viewModel.ProjectId);
-			await _navigationService.NavigateAsync(new Views.Project(project.ToViewModel(_projectsService, _navigationService)));
+			await _navigationService.NavigateAsync<ProjectViewModel, int>(viewModel.ProjectId);
 		}
 
 		public ObservableCollection<ProjectItemViewModel> ProjectItems

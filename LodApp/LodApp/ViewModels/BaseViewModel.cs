@@ -1,11 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 
 namespace LodApp.ViewModels
 {
-	public class BaseViewModel : INotifyPropertyChanged
+	public abstract class BaseViewModel : INotifyPropertyChanged
 	{
+		public virtual Task InitializeAsync()
+		{
+			return Task.CompletedTask;
+		}
+
 		public event PropertyChangedEventHandler PropertyChanged;
 
 		protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -21,7 +27,7 @@ namespace LodApp.ViewModels
 			}
 
 			backingField = value;
-			OnPropertyChanged();
+			OnPropertyChanged(propertyName);
 		}
 	}
 }

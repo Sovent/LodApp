@@ -6,33 +6,50 @@ using Xamarin.Forms.Xaml;
 namespace LodApp.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class MainPage : MasterDetailPage
+    public partial class MainPage : MasterDetailPage, IView<MainPageViewModel>
     {
-	    public MainPage(MainPageViewModel mainPageViewModel)
+	    public MainPage()
         {
-	        _mainPageViewModel = mainPageViewModel;
 	        InitializeComponent();
-	        BindingContext = mainPageViewModel;
-	        _masterPage = new MainPageMaster(mainPageViewModel);
-	        Master = _masterPage;
-	        Detail = mainPageViewModel.CurrentPage;
-			_masterPage.MenuList.ItemSelected += MenuListOnItemSelected;
-        }
+		}
 
-	    private void MenuListOnItemSelected(object sender, SelectedItemChangedEventArgs e)
+	    public MainPageViewModel ViewModel
+	    {
+		    get => _mainPageViewModel;
+		    set
+		    {
+			    _mainPageViewModel = value;
+			    BindingContext = value;
+			    _masterPage = new MainPageMaster
+			    {
+				    ViewModel = value
+			    };
+			    _masterPage.MenuList.ItemSelected += MenuListOnItemSelected;
+			    Master = _masterPage;
+			    value.PropertyChanged += (sender, args) =>
+			    {
+				    if (args.PropertyName == nameof(value.CurrentPage))
+				    {
+					    Detail = value.CurrentPage;
+				    }
+			    };
+		    } 
+	    }
+
+		private async void MenuListOnItemSelected(object sender, SelectedItemChangedEventArgs e)
 	    {
 			if (e?.SelectedItem == null)
 		    {
 			    return;
 		    }
 
-		    _mainPageViewModel.SelectMenuItem(e.SelectedItem as MainPageMenuItem);
+		    await _mainPageViewModel.SelectMenuItemAsync(e.SelectedItem as MainPageMenuItem);
 		    Detail = _mainPageViewModel.CurrentPage;
 		    IsPresented = false;
 		    _masterPage.MenuList.SelectedItem = null;
 		}
 
-	    private readonly MainPageMaster _masterPage;
-	    private readonly MainPageViewModel _mainPageViewModel;
-	}
+	    private MainPageMaster _masterPage;
+	    private MainPageViewModel _mainPageViewModel;
+    }
 }

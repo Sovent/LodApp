@@ -1,5 +1,7 @@
-﻿using LodApp.DataAccess;
+﻿using Acr.UserDialogs;
+using LodApp.DataAccess;
 using LodApp.Service;
+using LodApp.ViewModels;
 using LodApp.Views;
 using SimpleInjector;
 using Xamarin.Forms;
@@ -15,17 +17,18 @@ namespace LodApp
 
 			var container = new Container();
 
+			RegisterViews(container);
 			container.RegisterSingleton<ILodClient, LodClient>();
 			container.RegisterSingleton<IAuthenticationService, AuthenticationService>();
 			container.RegisterSingleton<IProjectsService, ProjectsService>();
-			var navigationService = new NavigationService(container);
-			container.RegisterInstance<INavigationService>(navigationService);
-
-			navigationService.SetRootPage<LoadingScreen>();
+			container.RegisterInstance(UserDialogs.Instance);
+			_navigationService = new NavigationService(container);
+			container.RegisterInstance(_navigationService);
 		}
 
-		protected override void OnStart ()
+		protected override async void OnStart ()
 		{
+			await _navigationService.SetRootViewModelAsync<LoadingScreenViewModel>();
 		}
 
 		protected override void OnSleep ()
@@ -35,5 +38,17 @@ namespace LodApp
 		protected override void OnResume ()
 		{
 		}
+
+		private void RegisterViews(Container container)
+		{
+			container.Register<IView<AddParticipantViewModel>, AddParticipantScreen>();
+			container.Register<IView<LoginScreenViewModel>, LoginScreen>();
+			container.Register<IView<LoadingScreenViewModel>, LoadingScreen>();
+			container.Register<IView<MainPageViewModel>, MainPage>();
+			container.Register<IView<ProjectsViewModel>, Projects>();
+			container.Register<IView<ProjectViewModel>, Project>();
+		}
+
+		private readonly INavigationService _navigationService;
 	}
 }

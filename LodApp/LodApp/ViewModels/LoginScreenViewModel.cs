@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using LodApp.DataAccess.DTO;
 using LodApp.Service;
-using LodApp.Views;
 
 namespace LodApp.ViewModels
 {
@@ -25,11 +24,7 @@ namespace LodApp.ViewModels
 			}
 
 			var currentUserViewModel = new CurrentUserViewModel(currentUser.DisplayName, currentUser.ImageUri);
-			_navigationService.SetRootPage(
-				new MainPage(new MainPageViewModel(
-					currentUserViewModel,
-					_authenticationService,
-					_navigationService)));
+			await _navigationService.SetRootViewModelAsync<MainPageViewModel, CurrentUserViewModel>(currentUserViewModel);
 			return true;
 		}
 

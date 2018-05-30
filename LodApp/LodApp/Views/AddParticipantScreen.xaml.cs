@@ -1,21 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LodApp.ViewModels;
+﻿using LodApp.ViewModels;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 namespace LodApp.Views
 {
 	[XamlCompilation(XamlCompilationOptions.Compile)]
-	public partial class AddParticipantScreen : ContentPage
+	public partial class AddParticipantScreen : ContentPage, IView<AddParticipantViewModel>
 	{
-		public AddParticipantScreen (AddParticipantViewModel viewModel)
+		public AddParticipantScreen ()
 		{
 			InitializeComponent ();
-			BindingContext = viewModel;
 		}
+
+		public AddParticipantViewModel ViewModel
+		{
+			get => _viewModel;
+			set
+			{
+				_viewModel = value;
+				BindingContext = _viewModel;
+			} 
+		}
+
+		private AddParticipantViewModel _viewModel;
 	}
 }
