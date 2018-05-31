@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using LodApp.DataAccess;
 using LodApp.DataAccess.DTO;
@@ -33,6 +34,19 @@ namespace LodApp.Service
 			catch (LodClientException exception)
 			{
 				return Result<string>.Failed(exception.Message);
+			}
+		}
+
+		public Task<Image> UploadProjectPicture(string imagePath, Stream photoStream)
+		{
+			try
+			{
+				var imageName = Path.GetFileName(imagePath);
+				return _lodClient.UploadImage(imageName, photoStream);
+			}
+			catch (Exception)
+			{
+				return null;
 			}
 		}
 

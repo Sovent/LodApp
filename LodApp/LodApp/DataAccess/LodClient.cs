@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -43,6 +44,20 @@ namespace LodApp.DataAccess
 		{
 			var httpResponse = await HttpClient.GetAsync("developers/search/" + searchString);
 			return await ParseResponseAsync<DeveloperPageDeveloper[]>(httpResponse);
+		}
+
+		public async Task<Image> UploadImage(string imageName, Stream imageStream)
+		{
+			using (var content = new MultipartFormDataContent())
+			{
+				content.Add(new StreamContent(imageStream), imageName, imageName);
+				const string imageResource = "image";
+				var httpResponse = await HttpClient.PostAsync(imageResource, content);
+				var uploadResult = await ParseResponseAsync<UploadImageResult>(httpResponse);
+				return new Image(
+					new Uri(BackendUrl + imageResource + "/" + uploadResult.BigPhotoName),
+					new Uri(BackendUrl + imageResource + "/" + uploadResult.SmallPhotoName));
+			}
 		}
 
 		public void AuthorizeBy(string token)

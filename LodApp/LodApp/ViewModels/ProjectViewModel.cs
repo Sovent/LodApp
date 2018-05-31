@@ -9,6 +9,8 @@ using LodApp.Converters;
 using LodApp.DataAccess.DTO;
 using LodApp.Extensions;
 using LodApp.Service;
+using Plugin.Media;
+using Plugin.Media.Abstractions;
 using Xamarin.Forms;
 
 namespace LodApp.ViewModels
@@ -36,6 +38,8 @@ namespace LodApp.ViewModels
 			SaveProject = new Command(async () => await SaveProjectAsync());
 			AddDeveloperCommand = new Command(async () => await navigationService
 				.NavigateModalAsync<AddParticipantViewModel, ObservableCollection<ProjectDeveloperViewModel>>(Developers));
+			AddScreenshotCommand = new Command(async () => await AddScreenshot());
+			PickPhoto = new Command(async () => await PickProjectPhotoAsync());
 		}
 
 		public override void Prepare(int projectId)
@@ -78,9 +82,11 @@ namespace LodApp.ViewModels
 			loading.Hide();
 		}
 
+		public ICommand PickPhoto { get; }
 		public ICommand AddDeveloperCommand { get; }
 		public ICommand DeleteDeveloperCommand { get; }
 		public ICommand SaveProject { get; }
+		public ICommand AddScreenshotCommand { get; }
 		public int ProjectId
 		{
 			get => _projectId;
@@ -184,6 +190,51 @@ namespace LodApp.ViewModels
 			var result = await _projectsService.UpdateProject(ProjectId, request);
 			dialog.Hide();
 			_userDialogs.Toast(result.IsError ? result.ErrorMessage : result.Value);
+		}
+
+		private async Task AddScreenshot()
+		{
+			var loadedImage = await UploadPhotoAsync();
+			if (loadedImage != null)
+			{
+				Screenshots.Add(loadedImage);
+			}
+		}
+		
+		private async Task PickProjectPhotoAsync()
+		{
+			var loadedImage = await UploadPhotoAsync();
+			if (loadedImage != null)
+			{
+				Image = loadedImage;
+			}
+		}
+
+		private async Task<ImageSource> UploadPhotoAsync()
+		{
+			if (!CrossMedia.IsSupported || !CrossMedia.Current.IsPickPhotoSupported)
+			{
+				await _userDialogs.AlertAsync("Выбор изображений не поддерживается на устройстве");
+			}
+
+			var mediaFile = await CrossMedia.Current.PickPhotoAsync();
+			if (mediaFile == null)
+			{
+				return null;
+			}
+			var loading = _userDialogs.Loading("Загрузка изображения");
+			var image = await _projectsService.UploadProjectPicture(mediaFile.Path,
+				mediaFile.GetStreamWithImageRotatedForExternalStorage());
+			if (image == null)
+			{
+				loading.Hide();
+				await _userDialogs.AlertAsync("Не удалось загрузить изображение");
+				return null;
+			}
+
+			var imageSource = ImageSource.FromUri(image.SmallPhotoUri);
+			loading.Hide();
+			return imageSource;
 		}
 
 		private ObservableCollection<ProjectDeveloperViewModel> _developers;

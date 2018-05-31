@@ -32,6 +32,8 @@ namespace LodApp.Views
 				{
 					if (args.PropertyName == nameof(value.Screenshots))
 					{
+						var viewModel = (ProjectViewModel) sender;
+						viewModel.Screenshots.CollectionChanged += (_, __) => InitializeScreenshots();
 						InitializeScreenshots();
 					}
 				};

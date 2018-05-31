@@ -1,12 +1,9 @@
-﻿using System;
-using Acr.UserDialogs;
+﻿using Acr.UserDialogs;
 using Android.App;
 using Android.Content.PM;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
 using Android.OS;
 using ImageCircle.Forms.Plugin.Droid;
+using Plugin.CurrentActivity;
 using Xamarin.Forms;
 
 namespace LodApp.Droid
@@ -20,13 +17,18 @@ namespace LodApp.Droid
             ToolbarResource = Resource.Layout.Toolbar;
 
             base.OnCreate(bundle);
-
-            global::Xamarin.Forms.Forms.Init(this, bundle);
+			Forms.Init(this, bundle);
 
 	        ImageCircleRenderer.Init();
 	        UserDialogs.Init(this);
+	        CrossCurrentActivity.Current.Init(this, bundle);
 			LoadApplication(new App());
 		}
-    }
+
+		public override void OnRequestPermissionsResult(int requestCode, string[] permissions, Permission[] grantResults)
+		{
+			Plugin.Permissions.PermissionsImplementation.Current.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+		}
+	}
 }
 

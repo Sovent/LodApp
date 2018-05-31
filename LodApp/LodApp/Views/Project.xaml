@@ -40,6 +40,9 @@
 							SelectedItem="{Binding ProjectStatus, Mode=TwoWay, Converter={StaticResource ProjectStatusStringConverter}}" />
 					</StackLayout>
 					<Frame Padding="0" FlexLayout.Basis="150" FlexLayout.Shrink="0" BackgroundColor="Black">
+						<Frame.GestureRecognizers>
+							<TapGestureRecognizer Command="{Binding PickPhoto}"/>
+						</Frame.GestureRecognizers>
 						<Image BackgroundColor="Black" HeightRequest="150" WidthRequest="150" Aspect="AspectFill" Source="{Binding Image}" />
 					</Frame>
 				</FlexLayout>
@@ -118,7 +121,7 @@
 		<ScrollView>
 			<StackLayout>
 				<FlexLayout x:Name="Screenshots" Direction="Row" Wrap="Wrap" JustifyContent="SpaceAround"/>
-				<Button Text="Добавить скриншот"/>
+				<Button Text="Добавить скриншот" Command="{Binding AddScreenshotCommand}"/>
 			</StackLayout>
 		</ScrollView>
 	</ContentPage>
