@@ -25,6 +25,10 @@
     <EmbeddedResource Include="Images\project-cap-image.png" />
   </ItemGroup>
 
+	<ItemGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<PackageReference Include="Xamarin.LiveReload" Version="0.3.27" />
+	</ItemGroup>
+	
   <ItemGroup>
     <PackageReference Include="Acr.UserDialogs" Version="7.0.1" />
     <PackageReference Include="Microsoft.Net.Http" Version="2.2.29" />
@@ -33,8 +37,7 @@
     <PackageReference Include="Xam.Plugin.Media" Version="4.0.0.9" />
     <PackageReference Include="Xam.Plugins.Forms.ImageCircle" Version="2.0.2" />
     <PackageReference Include="Xam.Plugins.Settings" Version="3.1.1" />
-    <PackageReference Include="Xamarin.Forms" Version="3.0.0.446417" />
-    <PackageReference Include="Xamarin.LiveReload" Version="0.3.27" />
+    <PackageReference Include="Xamarin.Forms" Version="3.0.0.446417" />    
   </ItemGroup>
 
   <ItemGroup>
