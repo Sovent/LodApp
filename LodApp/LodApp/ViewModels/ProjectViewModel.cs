@@ -10,7 +10,6 @@ using LodApp.DataAccess.DTO;
 using LodApp.Extensions;
 using LodApp.Service;
 using Plugin.Media;
-using Plugin.Media.Abstractions;
 using Xamarin.Forms;
 
 namespace LodApp.ViewModels

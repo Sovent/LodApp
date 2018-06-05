@@ -12,7 +12,9 @@ namespace LodApp
 	{
 		public App ()
 		{
+#if DEBUG
 			LiveReload.Init();
+#endif
 			InitializeComponent();
 
 			var container = new Container();
